@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: web
+    volumes:
+      - .:/usr/src/nexhome
+    environment:
+      - DATABASE=postgres
+      - SQL_HOST=db
+      - SQL_PORT=5432
+      - PYTHONUNBUFFERED=1
+      - DONTWRITEBYTECODE=1
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
+  db:
+    image: postgres:13
+    container_name: db
+    environment:
+      POSTGRES_USER: nexhomeuser
+      POSTGRES_PASSWORD: nexhomepassword
+      POSTGRES_DB: nexhomedb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
