@@ -1,4 +1,5 @@
 import uuid
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
@@ -45,3 +46,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
+    
+    def avatar_url(self):
+        if not self.avatar:
+            return ''
+        return f'{settings.WEBSITE_URL}{self.avatar.url}'

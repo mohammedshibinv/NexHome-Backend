@@ -1,4 +1,5 @@
 import uuid
+from django.conf import settings
 from django.db import models
 
 from useraccount.models import User
@@ -18,3 +19,8 @@ class Property(models.Model):
     image = models.ImageField(max_length=255)
     landlord = models.ForeignKey(User, related_name='properties', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def image_url(self):
+        if not self.image:
+            return ''
+        return f'{settings.WEBSITE_URL}{self.image.url}'

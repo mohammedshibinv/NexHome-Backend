@@ -1,13 +1,18 @@
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.response import Response
-
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Property
-from .serializers import PropertyListSerializer
+from .serializers import PropertyListSerializer, PropertyDetailsSerializer
 
-@api_view(['GET'])
-@authentication_classes([])  # If public access is intentional
-@permission_classes([])      # If public access is intentional
-def properties_list(request):
-    properties = Property.objects.all()
-    serializer = PropertyListSerializer(properties, many=True)
-    return Response({"data": serializer.data})
+class PropertiesListView(ListAPIView):
+    queryset = Property.objects.all()
+    serializer_class = PropertyListSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+class PropertyDetailsView(RetrieveAPIView):
+    queryset = Property.objects.all()
+    serializer_class = PropertyDetailsSerializer
+    permission_classes = []
+    authentication_classes = [JWTAuthentication]
+    lookup_field = 'pk'
